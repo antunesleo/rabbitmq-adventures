@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 services:
   pra-rabbitmq:
@@ -11,18 +11,36 @@ services:
       - 5672:5672
       - 15672:15672
 
-  pra-runner:
-    image: python:3.8
-    container_name: pra-runner
+  pra-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pra-consumer
     volumes:
       - ./:/code
     restart: unless-stopped
     command: >
-      bash -c "cd code && python runner.py"
+      bash -c "python src/consumer.py"
     networks:
       - pra-network
     depends_on:
       - pra-rabbitmq
+
+  pra-producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pra-producer
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python src/producer.py"
+    networks:
+      - pra-network
+    depends_on:
+      - pra-rabbitmq
+
 
 networks:
   pra-network:
