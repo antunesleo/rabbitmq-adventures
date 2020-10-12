@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+  pra-rabbitmq:
+    image: rabbitmq
+    container_name: pra-rabbitmq
+    restart: always
+    networks:
+      - pra-network
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  pra-runner:
+    image: python:3.8
+    container_name: pra-runner
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "cd code && python runner.py"
+    networks:
+      - pra-network
+    depends_on:
+      - pra-rabbitmq
+
+networks:
+  pra-network:
+    driver: bridge
