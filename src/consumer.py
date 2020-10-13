@@ -1,5 +1,19 @@
 #!/usr/bin/env python
-import pika, sys, os, time
+import json, os, sys, time
+import pika
+
+
+def message_callback(ch, method, properties, body):
+    print('------------------------')
+    print({
+        'ch': ch,
+        'method': method,
+        'properties': properties,
+        'body': body
+    })
+    a_beautiful_message = json.loads(body)
+    print(" [x] Received %r" % a_beautiful_message)
+    print('------------------------')
 
 
 def main():
@@ -8,12 +22,9 @@ def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='pra-rabbitmq'))
 
     channel = connection.channel()
-    channel.queue_declare(queue='hello')
+    channel.queue_declare(queue='messages')
 
-    def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
-
-    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue='messages', on_message_callback=message_callback, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()

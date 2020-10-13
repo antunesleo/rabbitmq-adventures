@@ -20,7 +20,7 @@ services:
       - ./:/code
     restart: unless-stopped
     command: >
-      bash -c "python src/consumer.py"
+      bash -c "python -u src/consumer.py"
     networks:
       - pra-network
     depends_on:
@@ -35,7 +35,7 @@ services:
       - ./:/code
     restart: unless-stopped
     command: >
-      bash -c "python src/producer.py"
+      bash -c "python -u src/producer.py"
     networks:
       - pra-network
     depends_on:
