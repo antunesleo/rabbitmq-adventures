@@ -1,47 +1,47 @@
 version: "3"
 
 services:
-  pra-rabbitmq:
+  wq-rabbitmq:
     image: rabbitmq
-    container_name: pra-rabbitmq
+    container_name: wq-rabbitmq
     restart: always
     networks:
-      - pra-network
+      - wq-network
     ports:
       - 5672:5672
       - 15672:15672
 
-  pra-consumer:
+  wq-consumer:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pra-consumer
+    container_name: wq-consumer
     volumes:
       - ./:/code
     restart: unless-stopped
     command: >
-      bash -c "python src/consumer.py"
+      bash -c "python -u consumer.py"
     networks:
-      - pra-network
+      - wq-network
     depends_on:
-      - pra-rabbitmq
+      - wq-rabbitmq
 
-  pra-producer:
+  wq-producer:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pra-producer
+    container_name: wq-producer
     volumes:
       - ./:/code
     restart: unless-stopped
     command: >
-      bash -c "python src/producer.py"
+      bash -c "python -u producer.py"
     networks:
-      - pra-network
+      - wq-network
     depends_on:
-      - pra-rabbitmq
+      - wq-rabbitmq
 
 
 networks:
-  pra-network:
+  wq-network:
     driver: bridge

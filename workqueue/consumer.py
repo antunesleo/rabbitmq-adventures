@@ -5,7 +5,7 @@ import pika, sys, os, time
 def main():
     time.sleep(10)
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='pra-rabbitmq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='wq-rabbitmq'))
 
     channel = connection.channel()
     channel.queue_declare(queue='hello')
