@@ -11,11 +11,26 @@ services:
       - 5672:5672
       - 15672:15672
 
-  wq-consumer:
+  wq-first-consumer:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: wq-consumer
+    container_name: wq-first-consumer
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u consumer.py"
+    networks:
+      - wq-network
+    depends_on:
+      - wq-rabbitmq
+
+  wq-second-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wq-second-consumer
     volumes:
       - ./:/code
     restart: unless-stopped

@@ -4,16 +4,9 @@ import pika
 
 
 def message_callback(ch, method, properties, body):
-    print('------------------------')
-    print({
-        'ch': ch,
-        'method': method,
-        'properties': properties,
-        'body': body
-    })
+    time.sleep(2)
     a_beautiful_message = json.loads(body)
     print(" [x] Received %r" % a_beautiful_message)
-    print('------------------------')
 
 
 def main():
@@ -23,7 +16,6 @@ def main():
 
     channel = connection.channel()
     channel.queue_declare(queue='messages')
-
     channel.basic_consume(queue='messages', on_message_callback=message_callback, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
