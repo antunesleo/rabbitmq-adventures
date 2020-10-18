@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import time
+import json, time
 import pika
 
 time.sleep(10)
