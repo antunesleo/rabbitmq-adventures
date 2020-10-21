@@ -1,0 +1,77 @@
+version: "3"
+
+services:
+  pb-rabbitmq:
+    image: rabbitmq
+    container_name: pb-rabbitmq
+    restart: always
+    networks:
+      - pb-network
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  pb-first-logs-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pb-first-logs-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u first_logs_subscriber.py"
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
+
+  pb-second-logs-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pb-second-logs-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u second_logs_subscriber.py"
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
+
+  pb-third-logs-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pb-third-logs-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u third_logs_subscriber.py"
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
+
+  pb-logs-publisher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pb-logs-publisher
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u logs_publisher.py"
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
+
+
+networks:
+  pb-network:
+    driver: bridge
