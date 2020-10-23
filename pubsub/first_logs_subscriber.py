@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 import pika
-import time
-
-time.sleep(20)
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='pb-rabbitmq'))

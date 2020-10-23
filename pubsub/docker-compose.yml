@@ -26,11 +26,11 @@ services:
     depends_on:
       - pb-rabbitmq
 
-  pb-second22-logs-subscriber:
+  pb-second-logs-subscriber:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pb-second22-logs-subscriber
+    container_name: pb-second-logs-subscriber
     volumes:
       - ./:/code
     restart: unless-stopped

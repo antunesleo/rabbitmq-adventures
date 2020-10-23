@@ -6,4 +6,4 @@ WORKDIR /code
 
 RUN go get github.com/streadway/amqp
 
-CMD go run forth_logs_subscriber.go
+CMD go run -v fourth_logs_subscriber.go
