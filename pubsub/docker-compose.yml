@@ -71,6 +71,18 @@ services:
     depends_on:
       - pb-rabbitmq
 
+  pb-fourth-logs-subscriber:
+    build:
+      context: .
+      dockerfile: DockerfileGo
+    container_name: pb-fourth-logs-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
 
 networks:
   pb-network:
