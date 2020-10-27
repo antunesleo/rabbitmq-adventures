@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"github.com/streadway/amqp"
 )
 
@@ -55,7 +54,7 @@ func main() {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,   // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -68,6 +67,7 @@ func main() {
 	go func() {
 		for d := range msgs {
 			log.Printf(" [x] %s", d.Body)
+// 			d.Ack(false)
 		}
 	}()
 

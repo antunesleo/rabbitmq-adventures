@@ -2,7 +2,7 @@ version: "3"
 
 services:
   pb-rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:management
     container_name: pb-rabbitmq
     restart: always
     networks:
@@ -11,11 +11,26 @@ services:
       - 5672:5672
       - 15672:15672
 
-  pb-first-logs-subscriber:
+  pb-first-a-logs-subscriber:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pb-first-logs-subscriber
+    container_name: pb-first-a-logs-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u first_logs_subscriber.py"
+    networks:
+      - pb-network
+    depends_on:
+      - pb-rabbitmq
+
+  pb-first-b-logs-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pb-first-b-logs-subscriber
     volumes:
       - ./:/code
     restart: unless-stopped

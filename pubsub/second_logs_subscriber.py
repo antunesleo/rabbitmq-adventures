@@ -16,8 +16,9 @@ print(' [*] Waiting for logs. To exit press CTRL+C')
 
 def callback(ch, method, properties, body):
     print("2 subscriber: [x] %r" % body)
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 channel.basic_consume(
-    queue=queue_name, on_message_callback=callback, auto_ack=True)
+    queue=queue_name, on_message_callback=callback)
 
 channel.start_consuming()
