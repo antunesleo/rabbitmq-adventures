@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+  pwr-rabbitmq:
+    image: rabbitmq:management
+    container_name: pwr-rabbitmq
+    restart: always
+    networks:
+      - pwr-network
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  pwr-publisher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pwr-publisher
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u publisher.py"
+    networks:
+      - pwr-network
+    depends_on:
+      - pwr-rabbitmq
+
+  pwr-first-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pwr-first-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u first_subscriber.py"
+    networks:
+      - pwr-network
+    depends_on:
+      - pwr-rabbitmq
+
+  pwr-second-subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pwr-second-subscriber
+    volumes:
+      - ./:/code
+    restart: unless-stopped
+    command: >
+      bash -c "python -u second_subscriber.py"
+    networks:
+      - pwr-network
+    depends_on:
+      - pwr-rabbitmq
+
+
+networks:
+  pwr-network:
+    driver: bridge
