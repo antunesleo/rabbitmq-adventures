@@ -7,6 +7,7 @@ import pika
 time.sleep(30)
 
 EXCHANGE_NAME = 'messages'
+DLX_EXCHANGE_NAME = 'messages.retry'
 
 
 def open_rabbitmq_connection_channel():
@@ -15,7 +16,15 @@ def open_rabbitmq_connection_channel():
 
 
 def build_rabbitmq_topology(channel):
-    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type='fanout')
+    channel.exchange_declare(exchange=DLX_EXCHANGE_NAME, exchange_type='fanout')
+    channel.exchange_declare(
+        exchange=EXCHANGE_NAME,
+        exchange_type='fanout',
+        arguments={
+            'x-message-ttl': 3000,
+            'x-dead-letter-exchange': 'dlx'
+        }
+    )
 
 
 def start_publisher(channel):
@@ -29,4 +38,4 @@ build_rabbitmq_topology(channel)
 start_publisher(channel)
 connection.close()
 
-time.sleep(15)
+time.sleep(10)

@@ -3,6 +3,7 @@ import pika
 
 
 EXCHANGE_NAME = 'messages'
+DLX_EXCHANGE_NAME = 'messages.retry'
 QUEUE_NAME = 'firstsub.messages'
 
 
